@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>supaguard — Security audit for Supabase projects</title>
-  <meta name="description" content="AI writes your Supabase code. It makes the same mistakes every time. supaguard finds them in seconds — and fixes the ones it can." />
-  <meta property="og:title" content="supaguard" />
+  <title>supafix — Security audit for Supabase projects</title>
+  <meta name="description" content="AI writes your Supabase code. It makes the same mistakes every time. supafix finds them in seconds — and fixes the ones it can." />
+  <meta property="og:title" content="supafix" />
   <meta property="og:description" content="Security audit for Supabase projects. One command, zero install." />
   <meta property="og:type" content="website" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡</text></svg>" />
@@ -602,14 +602,14 @@
 <nav id="nav">
   <a href="/" class="nav-logo">
     <div class="shield">🛡</div>
-    supaguard
+    supafix
   </a>
   <div class="nav-links">
-    <a href="https://github.com/noblleai/supaguard" class="nav-link" target="_blank" rel="noopener">
+    <a href="https://github.com/noblleai/supafix" class="nav-link" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.03c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 013-.4c1.02 0 2.04.13 3 .4 2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.21.7.83.58C20.57 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
       GitHub
     </a>
-    <a href="https://www.npmjs.com/package/supaguard" class="nav-link" target="_blank" rel="noopener">
+    <a href="https://www.npmjs.com/package/supafix" class="nav-link" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474C23.214 24 24 23.214 24 22.237V1.763C24 .786 23.214 0 22.237 0zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L11.948 19.2H5.113z"/></svg>
       npm
     </a>
@@ -626,11 +626,11 @@
     <h1>Security audit for<br><em>Supabase</em> projects.</h1>
     <p class="hero-sub">
       AI writes your backend. It makes the same security mistakes, every time.
-      supaguard finds them in seconds — and fixes the ones it can.
+      supafix finds them in seconds — and fixes the ones it can.
     </p>
     <div class="command-box">
       <span class="prompt">$</span>
-      <code>npx supaguard</code>
+      <code>npx supafix</code>
       <button class="copy-btn" id="copyBtn" onclick="copyCommand()">Copy</button>
     </div>
     <p class="hero-footnote">No install required. Works with Next.js, SvelteKit, Nuxt, and any Supabase project.</p>
@@ -647,7 +647,7 @@
           <div class="tdot tdot-y"></div>
           <div class="tdot tdot-g"></div>
         </div>
-        <div class="terminal-title">supaguard</div>
+        <div class="terminal-title">supafix</div>
       </div>
       <div class="terminal-body" id="terminalBody"></div>
     </div>
@@ -805,11 +805,11 @@
     <div class="badge-box">
       <div class="badge-box-header">
         <span>$</span>
-        <span class="t-cmd">npx supaguard <span style="color:var(--cyan)">--badge</span></span>
+        <span class="t-cmd">npx supafix <span style="color:var(--cyan)">--badge</span></span>
       </div>
       <div class="badge-box-body">
         <span class="t-dim"># Paste this into your README</span>
-        <div class="badge-output">[![supaguard](https://img.shields.io/badge/supabase--guard%3A+A-brightgreen?logo=supabase&logoColor=white)](https://github.com/noblleai/supaguard)</div>
+        <div class="badge-output">[![supafix](https://img.shields.io/badge/supabase--guard%3A+A-brightgreen?logo=supabase&logoColor=white)](https://github.com/noblleai/supafix)</div>
       </div>
     </div>
   </div>
@@ -820,7 +820,7 @@
   <div class="container">
     <p class="section-label">Auto-fix</p>
     <h2 class="section-title">It doesn't just report.<br>It fixes.</h2>
-    <p class="section-sub">Run <code style="font-family:monospace;color:var(--cyan)">--fix</code> and supaguard generates a migration for your RLS gaps and updates your <code style="font-family:monospace;color:var(--cyan)">.gitignore</code> — then tells you what it couldn't touch and why.</p>
+    <p class="section-sub">Run <code style="font-family:monospace;color:var(--cyan)">--fix</code> and supafix generates a migration for your RLS gaps and updates your <code style="font-family:monospace;color:var(--cyan)">.gitignore</code> — then tells you what it couldn't touch and why.</p>
 
     <div class="fix-terminal">
       <div class="terminal-bar">
@@ -829,10 +829,10 @@
           <div class="tdot tdot-y"></div>
           <div class="tdot tdot-g"></div>
         </div>
-        <div class="terminal-title">supaguard --fix</div>
+        <div class="terminal-title">supafix --fix</div>
       </div>
       <div class="fix-body">
-        <span class="fix-line"><span class="t-dim">  supaguard  v0.2.0  --fix mode</span></span>
+        <span class="fix-line"><span class="t-dim">  supafix  v0.2.0  --fix mode</span></span>
         <span class="fix-line"><span class="t-dim">  ─────────────────────────────────────────────</span></span>
         <span class="fix-line"> </span>
         <span class="fix-line"><span class="t-white t-bold">  Auto-fixed</span></span>
@@ -851,7 +851,7 @@
         <span class="fix-line">  <span class="t-red">✖</span>  Stripe secret key found in source → lib/stripe.ts:3</span>
         <span class="fix-line">  <span class="t-red">✖</span>  Policy "insert_post" uses user_metadata for RBAC</span>
         <span class="fix-line"> </span>
-        <span class="fix-line">  <span class="t-dim">Run</span> npx supaguard <span class="t-dim">to verify.</span></span>
+        <span class="fix-line">  <span class="t-dim">Run</span> npx supafix <span class="t-dim">to verify.</span></span>
         <span class="fix-line">  <span class="t-yellow">⚠</span>  <span class="t-dim">Review the generated migration before running supabase db push.</span></span>
       </div>
     </div>
@@ -872,12 +872,12 @@
       </div>
       <div class="ci-block-body" id="ciBlock">
 <span class="yaml-cmt"># One-line action</span>
-<span class="yaml-key">- uses</span>: <span class="yaml-val">noblleai/supaguard@v1</span>
+<span class="yaml-key">- uses</span>: <span class="yaml-val">noblleai/supafix@v1</span>
   <span class="yaml-key">with</span>:
     <span class="yaml-key">fail-on</span>: <span class="yaml-str">critical</span>    <span class="yaml-cmt"># critical | warning | info | none</span>
 
 <span class="yaml-cmt"># Or run directly and use the outputs</span>
-<span class="yaml-key">- uses</span>: <span class="yaml-val">noblleai/supaguard@v1</span>
+<span class="yaml-key">- uses</span>: <span class="yaml-val">noblleai/supafix@v1</span>
   <span class="yaml-key">id</span>: <span class="yaml-val">audit</span>
   <span class="yaml-key">with</span>:
     <span class="yaml-key">fail-on</span>: <span class="yaml-str">none</span>
@@ -914,9 +914,9 @@
         <span>MIT License</span>
       </div>
       <div class="footer-links">
-        <a href="https://github.com/noblleai/supaguard" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://www.npmjs.com/package/supaguard" target="_blank" rel="noopener">npm</a>
-        <a href="https://github.com/noblleai/supaguard/issues" target="_blank" rel="noopener">Issues</a>
+        <a href="https://github.com/noblleai/supafix" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.npmjs.com/package/supafix" target="_blank" rel="noopener">npm</a>
+        <a href="https://github.com/noblleai/supafix/issues" target="_blank" rel="noopener">Issues</a>
       </div>
     </div>
   </div>
@@ -931,7 +931,7 @@
 
   // ── Copy command ─────────────────────────────────────────────
   function copyCommand() {
-    navigator.clipboard.writeText('npx supaguard').then(() => {
+    navigator.clipboard.writeText('npx supafix').then(() => {
       const btn = document.getElementById('copyBtn');
       const orig = btn.textContent;
       btn.textContent = 'Copied!';
@@ -941,7 +941,7 @@
   }
 
   function copyCI() {
-    const text = `- uses: noblleai/supaguard@v1
+    const text = `- uses: noblleai/supafix@v1
   with:
     fail-on: critical`;
     navigator.clipboard.writeText(text);
@@ -949,7 +949,7 @@
 
   // ── Terminal animation ───────────────────────────────────────
   const LINES = [
-    { h: '  <span class="t-bold t-white">supaguard</span>  <span class="t-dim">v0.2.0</span>', d: 0 },
+    { h: '  <span class="t-bold t-white">supafix</span>  <span class="t-dim">v0.2.0</span>', d: 0 },
     { h: '  <span class="t-dim">─────────────────────────────────────────────</span>', d: 40 },
     { h: '  <span class="t-dim">12 migrations · 8 tables · 24 route files · 3,102 source files&nbsp;&nbsp;(411ms)</span>', d: 80 },
     { h: '', d: 60 },
@@ -959,7 +959,7 @@
     { h: '  <span class="t-critical">CRITICAL</span>  <span class="t-white">"orders" has RLS enabled but no policies</span>', d: 80 },
     { h: '            <span class="t-dim">With RLS on and no policies Postgres denies all access.</span>', d: 20 },
     { h: '            <span class="t-dim">→</span> <span class="t-cyan">supabase/migrations/20240801_orders.sql</span>', d: 10 },
-    { h: '            <span class="t-green">✦</span> <span class="t-dim">auto-fixable — run</span> npx supaguard --fix', d: 10 },
+    { h: '            <span class="t-green">✦</span> <span class="t-dim">auto-fixable — run</span> npx supafix --fix', d: 10 },
     { h: '', d: 60 },
     { h: '  <span class="t-critical">CRITICAL</span>  <span class="t-white">"invoices" has tenant column not enforced in any RLS policy</span>', d: 100 },
     { h: '            <span class="t-dim">Column [company_id] exists but no policy checks it.</span>', d: 20 },
@@ -985,7 +985,7 @@
     { h: '  <span class="t-red">3 critical</span>  ·  <span class="t-yellow">1 warning</span>', d: 40 },
     { h: '', d: 40 },
     { h: '  Security grade: <span class="t-red t-bold">F</span>  <span class="t-dim">(critical)</span>', d: 0 },
-    { h: '  <span class="t-dim">1 issue can be auto-fixed — run</span> npx supaguard --fix', d: 20 },
+    { h: '  <span class="t-dim">1 issue can be auto-fixed — run</span> npx supafix --fix', d: 20 },
     { h: '', d: 0 },
   ];
 
@@ -1018,7 +1018,7 @@
     line.appendChild(cursor);
     body.appendChild(line);
 
-    const text = 'npx supaguard';
+    const text = 'npx supafix';
     for (const ch of text) {
       cmd.textContent += ch;
       await sleep(55);

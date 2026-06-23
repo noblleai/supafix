@@ -1,5 +1,5 @@
 /**
- * Advanced RLS checks — catches AI-generated policy mistakes that basic
+ * Advanced RLS checks — catches policy mistakes that basic
  * existence checks miss.
  *
  * Checks:
@@ -14,11 +14,11 @@
  *
  *  3. Policies covering INSERT / UPDATE / ALL with no WITH CHECK clause
  *     → USING controls which rows are visible (SELECT). WITH CHECK controls
- *       which rows can be written. AI almost always forgets WITH CHECK, so
+ *       which rows can be written. developers often forget WITH CHECK, so
  *       a user who can read a row can also write anything to it.
  *
  *  4. Tables where SELECT is covered but INSERT/UPDATE/DELETE are not
- *     → Common AI pattern: write one SELECT policy and call it done.
+ *     → Common mistake: write one SELECT policy and call it done.
  *       Unauthenticated writes are still possible.
  */
 

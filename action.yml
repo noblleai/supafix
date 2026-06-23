@@ -1,4 +1,4 @@
-name: 'supaguard'
+name: 'supafix'
 description: 'Security audit for Supabase projects — RLS policies, auth misuse, secrets, storage, Edge Functions'
 author: 'Noblle'
 
@@ -57,7 +57,7 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: Run supaguard
+    - name: Run supafix
       id: scan
       shell: bash
       run: |
@@ -69,10 +69,10 @@ runs:
         [ "${{ inputs.skip-injection }}" = "true" ] && FLAGS="$FLAGS --no-injection"
         [ "${{ inputs.skip-edge }}"      = "true" ] && FLAGS="$FLAGS --no-edge"
 
-        RESULTS_PATH="${RUNNER_TEMP}/supaguard-results.json"
+        RESULTS_PATH="${RUNNER_TEMP}/supafix-results.json"
 
         set +e
-        npx supaguard \
+        npx supafix \
           --cwd "${{ inputs.working-directory }}" \
           --json $FLAGS \
           | tee "$RESULTS_PATH"

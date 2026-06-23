@@ -1,7 +1,7 @@
 /**
  * Supabase Edge Function security scanner.
  *
- * Scans supabase/functions/ for common AI-generated security mistakes.
+ * Scans supabase/functions/ for common security mistakes.
  *
  * Checks:
  *  1. Supabase client created without forwarding the Authorization header

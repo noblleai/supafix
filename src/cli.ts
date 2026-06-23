@@ -12,10 +12,10 @@ import { applyFixes, printFixReport } from './fix.js';
 import type { ScanResult, ScanStats, Finding } from './types.js';
 
 const HELP = `
-  supaguard — security audit for Supabase projects
+  supafix — security audit for Supabase projects
 
   Usage
-    npx supaguard [options]
+    npx supafix [options]
 
   Options
     --cwd <path>      Project root to scan (default: current directory)
@@ -32,7 +32,7 @@ const HELP = `
     --help            Show this help
 
   Config
-    Create supaguard.config.json in your project root:
+    Create supafix.config.json in your project root:
     {
       "migrationDirs": ["supabase/migrations"],
       "routeDirs":     ["app/api"],
@@ -45,11 +45,11 @@ const HELP = `
     2   Fatal error
 
   Examples
-    npx supaguard
-    npx supaguard --cwd ./apps/web --no-secrets
-    npx supaguard --fix
-    npx supaguard --badge
-    npx supaguard --json | jq '.findings[] | select(.severity=="critical")'
+    npx supafix
+    npx supafix --cwd ./apps/web --no-secrets
+    npx supafix --fix
+    npx supafix --badge
+    npx supafix --json | jq '.findings[] | select(.severity=="critical")'
 `;
 
 interface Config {
@@ -59,7 +59,7 @@ interface Config {
 }
 
 function loadProjectConfig(cwd: string): Partial<Config> {
-  for (const name of ['supaguard.config.json', '.supaguard.json']) {
+  for (const name of ['supafix.config.json', '.supafix.json']) {
     try {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       return require(path.join(cwd, name)) as Partial<Config>;
@@ -210,7 +210,7 @@ async function main(): Promise<void> {
   // ── --fix: apply auto-fixes then print what happened ─────────────────────
   if (fix) {
     process.stdout.write('\n');
-    process.stdout.write(`  supaguard  v${getVersion()}  --fix mode\n`);
+    process.stdout.write(`  supafix  v${getVersion()}  --fix mode\n`);
     process.stdout.write('  ─────────────────────────────────────────────\n');
     const { fixed, unfixable } = applyFixes(cwd, deduped);
     printFixReport(fixed, unfixable);

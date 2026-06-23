@@ -79,14 +79,14 @@ export function badgeUrl(findings: Finding[]): string {
 }
 
 export function badgeMarkdown(findings: Finding[]): string {
-  return `[![supaguard](${badgeUrl(findings)})](https://github.com/noblleai/supaguard)`;
+  return `[![supafix](${badgeUrl(findings)})](https://github.com/noblleai/supafix)`;
 }
 
 export function printReport(result: ScanResult): void {
   const { findings, stats, ms, grade } = result;
 
   process.stdout.write('\n');
-  process.stdout.write(c.bold('  supaguard') + c.dim('  v' + getVersion()) + '\n');
+  process.stdout.write(c.bold('  supafix') + c.dim('  v' + getVersion()) + '\n');
   process.stdout.write(c.dim('  ─────────────────────────────────────────────\n'));
 
   const statParts: string[] = [];
@@ -143,7 +143,7 @@ export function printReport(result: ScanResult): void {
       }
 
       if (f.autoFixable) {
-        process.stdout.write(`            ${c.green('✦')} ${c.dim('auto-fixable — run')} npx supaguard --fix\n`);
+        process.stdout.write(`            ${c.green('✦')} ${c.dim('auto-fixable — run')} npx supafix --fix\n`);
       }
     }
 
@@ -165,7 +165,7 @@ export function printReport(result: ScanResult): void {
 
   process.stdout.write(`  Security grade: ${colorGrade(grade)}  ${c.dim('(' + gradeLabel(grade) + ')')}\n`);
   if (autoFix > 0) {
-    process.stdout.write(c.dim(`  ${autoFix} issue${autoFix > 1 ? 's' : ''} can be auto-fixed — run `) + 'npx supaguard --fix\n');
+    process.stdout.write(c.dim(`  ${autoFix} issue${autoFix > 1 ? 's' : ''} can be auto-fixed — run `) + 'npx supafix --fix\n');
   }
   process.stdout.write('\n');
   process.stdout.write(c.dim('  Add this badge to your README:\n'));

@@ -1,23 +1,23 @@
-# supaguard
+# supafix
 
 **Security audit for Supabase projects — one command, zero install.**
 
-[![npm](https://img.shields.io/npm/v/supaguard?color=red&label=npm)](https://www.npmjs.com/package/supaguard)
+[![npm](https://img.shields.io/npm/v/supafix?color=red&label=npm)](https://www.npmjs.com/package/supafix)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Node ≥18](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](https://nodejs.org)
 
 ```
-npx supaguard
+npx supafix
 ```
 
-AI writes your Supabase code. It makes the same security mistakes every time. `supaguard` catches them in seconds — and fixes the ones it can.
+AI writes your Supabase code. It makes the same security mistakes every time. `supafix` catches them in seconds — and fixes the ones it can.
 
 ---
 
 ## Demo
 
 ```
-  supaguard  v0.2.0
+  supafix  v0.2.0
   ─────────────────────────────────────────────
   12 migrations · 8 tables · 24 route files · 3,102 source files  (411ms)
 
@@ -28,7 +28,7 @@ AI writes your Supabase code. It makes the same security mistakes every time. `s
             With RLS on and no policies Postgres denies all access.
             → supabase/migrations/20240801_orders.sql
             fix: CREATE POLICY "access" ON orders USING (auth.uid() IS NOT NULL);
-            ✦ auto-fixable — run npx supaguard --fix
+            ✦ auto-fixable — run npx supafix --fix
 
   CRITICAL  "invoices" has tenant column(s) not enforced in any RLS policy
             Column [company_id] exists but is not referenced in any policy.
@@ -61,10 +61,10 @@ AI writes your Supabase code. It makes the same security mistakes every time. `s
   4 critical  ·  1 warning
 
   Security grade: F  (critical)
-  1 issue can be auto-fixed — run npx supaguard --fix
+  1 issue can be auto-fixed — run npx supafix --fix
 
   Add this badge to your README:
-  [![supaguard](https://img.shields.io/badge/supabase--guard%3A+F+%E2%80%94+4+critical-red?logo=supabase&logoColor=white)](https://github.com/noblleai/supaguard)
+  [![supafix](https://img.shields.io/badge/supabase--guard%3A+F+%E2%80%94+4+critical-red?logo=supabase&logoColor=white)](https://github.com/noblleai/supafix)
 ```
 
 ---
@@ -87,7 +87,7 @@ Reads every SQL migration and tracks your tables through the full migration hist
 | **Tenant column (`org_id`, `company_id`, `tenant_id`…) not checked in any policy** | **`critical`** |
 
 ### Auth Misuse
-Catches the most common AI-generated Supabase auth bugs.
+Catches the most common common Supabase auth bugs.
 
 | Check | Severity |
 |---|---|
@@ -134,26 +134,26 @@ Scans source files, config files, and `.env` files.
 
 ```bash
 # Scan current directory
-npx supaguard
+npx supafix
 
 # Scan a monorepo app
-npx supaguard --cwd ./apps/web
+npx supafix --cwd ./apps/web
 
 # Auto-fix what can be fixed (generates migration, updates .gitignore)
-npx supaguard --fix
+npx supafix --fix
 
 # Print a README badge for your security grade
-npx supaguard --badge
+npx supafix --badge
 
 # Skip a category
-npx supaguard --no-secrets
-npx supaguard --no-rls
+npx supafix --no-secrets
+npx supafix --no-rls
 
 # CI-friendly: machine-readable JSON
-npx supaguard --json
+npx supafix --json
 
 # Pipe to jq
-npx supaguard --json | jq '.findings[] | select(.severity=="critical")'
+npx supafix --json | jq '.findings[] | select(.severity=="critical")'
 ```
 
 ### Options
@@ -187,7 +187,7 @@ npx supaguard --json | jq '.findings[] | select(.severity=="critical")'
 `--fix` applies the issues it can safely resolve and lists everything else:
 
 ```
-  supaguard  v0.2.0  --fix mode
+  supafix  v0.2.0  --fix mode
   ─────────────────────────────────────────────
 
   Auto-fixed
@@ -206,7 +206,7 @@ npx supaguard --json | jq '.findings[] | select(.severity=="critical")'
   ✖  Stripe secret key found in source
   ✖  Policy "insert_post" uses user_metadata for RBAC
 
-  Run npx supaguard to verify.
+  Run npx supafix to verify.
   ⚠  Review the generated migration before running supabase db push.
 ```
 
@@ -228,11 +228,11 @@ npx supaguard --json | jq '.findings[] | select(.severity=="critical")'
 Every scan ends with a security grade. Run `--badge` to get a shields.io badge for your README:
 
 ```bash
-npx supaguard --badge
+npx supafix --badge
 ```
 
 ```markdown
-[![supaguard](https://img.shields.io/badge/supabase--guard%3A+A-brightgreen?logo=supabase&logoColor=white)](https://github.com/noblleai/supaguard)
+[![supafix](https://img.shields.io/badge/supabase--guard%3A+A-brightgreen?logo=supabase&logoColor=white)](https://github.com/noblleai/supafix)
 ```
 
 | Grade | Criteria |
@@ -251,7 +251,7 @@ npx supaguard --badge
 
 ```yaml
 - name: Supabase security audit
-  run: npx supaguard --json | tee audit.json
+  run: npx supafix --json | tee audit.json
 
 - name: Upload audit results
   uses: actions/upload-artifact@v4
@@ -263,7 +263,7 @@ npx supaguard --badge
 **Block the build on critical issues only**
 
 ```bash
-npx supaguard --json \
+npx supafix --json \
   | jq -e '.findings | map(select(.severity=="critical")) | length == 0'
 ```
 
@@ -271,7 +271,7 @@ npx supaguard --json \
 
 ## Config file (optional)
 
-Create `supaguard.config.json` at your project root:
+Create `supafix.config.json` at your project root:
 
 ```json
 {

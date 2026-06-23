@@ -1,5 +1,5 @@
 /**
- * Auth misuse scanner — catches the most common AI-generated Supabase auth bugs.
+ * Auth misuse scanner — catches common Supabase auth misuse patterns.
  *
  * Checks:
  *  1. getSession() used for server-side auth
@@ -16,7 +16,7 @@
  *
  *  3. supabase.auth.admin used outside of clearly-intended admin files
  *     → auth.admin methods use the service role and bypass RLS entirely.
- *       Fine in isolated admin scripts; dangerous when AI drops them into
+ *       Fine in isolated admin scripts; dangerous when dropped into
  *       a regular API route.
  */
 
@@ -125,7 +125,7 @@ export function scanAuth(
         category: 'routes',
         title: `supabase.auth.admin used in ${rel}`,
         detail:
-          'auth.admin methods use the service role key and bypass RLS entirely. Verify this is intentional and not an AI-generated shortcut for what should be a user-scoped operation.',
+          'auth.admin methods use the service role key and bypass RLS entirely. Verify this is intentional and not a shortcut that bypasses what should be a user-scoped operation.',
         file: rel,
         line: lineIdx + 1,
         fix: 'Use the user-scoped Supabase client unless this is an explicitly privileged admin operation.',
