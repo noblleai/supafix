@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>supaguard — Security audit for Supabase projects</title>
+  <meta name="description" content="AI writes your Supabase code. It makes the same mistakes every time. supaguard finds them in seconds — and fixes the ones it can." />
+  <meta property="og:title" content="supaguard" />
+  <meta property="og:description" content="Security audit for Supabase projects. One command, zero install." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #080808;
+      --surface:  #0f0f0f;
+      --surface2: #141414;
+      --border:   #1e1e1e;
+      --border2:  #2a2a2a;
+      --text:     #e8e8e8;
+      --muted:    #555;
+      --muted2:   #888;
+      --green:    #3ECF8E;
+      --red:      #f03838;
+      --yellow:   #f5a623;
+      --cyan:     #22d3ee;
+      --white:    #fff;
+      --radius:   10px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Nav ──────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      border-bottom: 1px solid transparent;
+      transition: background 0.2s, border-color 0.2s, backdrop-filter 0.2s;
+    }
+    nav.scrolled {
+      background: rgba(8,8,8,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-color: var(--border);
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+      font-size: 15px;
+      color: var(--text);
+    }
+    .nav-logo .shield {
+      width: 28px;
+      height: 28px;
+      background: var(--green);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--muted2);
+      transition: color 0.15s, background 0.15s;
+    }
+    .nav-link:hover { color: var(--text); background: var(--surface2); }
+    .nav-link svg { width: 14px; height: 14px; }
+
+    /* ── Layout ───────────────────────────────────────────── */
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    section { padding: 96px 0; }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 3.5vw, 40px);
+      font-weight: 500;
+      line-height: 1.2;
+      color: var(--white);
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 17px;
+      color: var(--muted2);
+      max-width: 560px;
+      line-height: 1.65;
+    }
+
+    /* ── Hero ─────────────────────────────────────────────── */
+    #hero {
+      padding-top: 160px;
+      padding-bottom: 80px;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border: 1px solid var(--border2);
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--muted2);
+      margin-bottom: 40px;
+    }
+    .hero-badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    h1 {
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 500;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      margin-bottom: 24px;
+    }
+    h1 em {
+      font-style: normal;
+      color: var(--green);
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: var(--muted2);
+      max-width: 540px;
+      margin: 0 auto 48px;
+      line-height: 1.7;
+    }
+
+    .command-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      overflow: hidden;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .command-box .prompt {
+      padding: 14px 20px;
+      font-size: 15px;
+      color: var(--muted2);
+      border-right: 1px solid var(--border2);
+      user-select: none;
+    }
+    .command-box code {
+      padding: 14px 20px;
+      font-size: 15px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .copy-btn {
+      padding: 14px 18px;
+      background: transparent;
+      border: none;
+      border-left: 1px solid var(--border2);
+      color: var(--muted);
+      cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      transition: color 0.15s, background 0.15s;
+      white-space: nowrap;
+    }
+    .copy-btn:hover { color: var(--text); background: var(--surface2); }
+    .copy-btn.copied { color: var(--green); }
+
+    .hero-footnote {
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* ── Terminal ─────────────────────────────────────────── */
+    #demo { padding-top: 0; }
+
+    .terminal-window {
+      background: #0c0c0c;
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .terminal-bar {
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .terminal-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .tdot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .tdot-r { background: #ff5f57; }
+    .tdot-y { background: #febc2e; }
+    .tdot-g { background: #28c840; }
+    .terminal-title {
+      flex: 1;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      margin-right: 52px;
+    }
+
+    .terminal-body {
+      padding: 24px 28px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.65;
+      min-height: 420px;
+      overflow: hidden;
+    }
+
+    .t-line { display: block; white-space: pre; }
+    .t-prompt { color: var(--muted2); }
+    .t-cmd { color: var(--text); }
+    .t-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 14px;
+      background: var(--green);
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    .t-bold  { font-weight: 500; }
+    .t-dim   { color: #4a4a4a; }
+    .t-white { color: #e0e0e0; }
+    .t-red   { color: var(--red); }
+    .t-yellow{ color: var(--yellow); }
+    .t-green { color: var(--green); }
+    .t-cyan  { color: var(--cyan); }
+    .t-critical { color: var(--red); font-weight: 500; }
+
+    /* ── Stats ────────────────────────────────────────────── */
+    #stats { padding: 48px 0; }
+    .stats-row {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .stat {
+      flex: 1;
+      padding: 28px 24px;
+      border-right: 1px solid var(--border);
+      text-align: center;
+    }
+    .stat:last-child { border-right: none; }
+    .stat-number {
+      font-size: 32px;
+      font-weight: 500;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: var(--muted2);
+    }
+
+    /* ── Checks ───────────────────────────────────────────── */
+    .checks-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .check-card {
+      background: var(--bg);
+      padding: 28px 28px 32px;
+      transition: background 0.15s;
+    }
+    .check-card:hover { background: var(--surface); }
+    .check-category {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .check-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .check-icon.red    { background: rgba(240,56,56,0.12); }
+    .check-icon.yellow { background: rgba(245,166,35,0.12); }
+    .check-icon.cyan   { background: rgba(34,211,238,0.12); }
+    .check-icon.green  { background: rgba(62,207,142,0.12); }
+    .check-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--white);
+    }
+    .check-items {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .check-items li {
+      font-size: 13px;
+      color: var(--muted2);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.5;
+    }
+    .check-items li::before {
+      content: '·';
+      color: var(--muted);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .severity-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 5px;
+    }
+    .dot-red    { background: var(--red); }
+    .dot-yellow { background: var(--yellow); }
+    .dot-cyan   { background: var(--cyan); }
+
+    /* ── Grade ────────────────────────────────────────────── */
+    #grade { }
+    .grade-display {
+      display: flex;
+      gap: 12px;
+      margin: 40px 0;
+      flex-wrap: wrap;
+    }
+    .grade-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border2);
+      background: var(--surface);
+    }
+    .grade-letter {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 1;
+    }
+    .grade-desc {
+      font-size: 12px;
+      color: var(--muted2);
+      line-height: 1.4;
+    }
+    .grade-pill.grade-a .grade-letter { color: #22c55e; }
+    .grade-pill.grade-b .grade-letter { color: #84cc16; }
+    .grade-pill.grade-c .grade-letter { color: var(--yellow); }
+    .grade-pill.grade-d .grade-letter { color: #f97316; }
+    .grade-pill.grade-f .grade-letter { color: var(--red); }
+
+    .badge-box {
+      margin-top: 32px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .badge-box-header {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--muted2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge-box-body {
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--muted2);
+    }
+    .badge-box-body .cmd-highlight { color: var(--green); }
+    .badge-box-body .badge-output {
+      margin-top: 12px;
+      padding: 14px 16px;
+      background: var(--surface2);
+      border-radius: 6px;
+      color: var(--cyan);
+      font-size: 12px;
+      word-break: break-all;
+      line-height: 1.5;
+    }
+
+    /* ── Fix ──────────────────────────────────────────────── */
+    .fix-terminal {
+      margin-top: 40px;
+      background: #0c0c0c;
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .fix-terminal .terminal-bar {
+      background: var(--surface2);
+    }
+    .fix-body {
+      padding: 24px 28px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    .fix-line { display: block; }
+
+    /* ── CI ───────────────────────────────────────────────── */
+    .ci-block {
+      margin-top: 40px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .ci-block-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--muted2);
+    }
+    .ci-block-body {
+      padding: 24px 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+    .yaml-key   { color: var(--cyan); }
+    .yaml-val   { color: var(--green); }
+    .yaml-str   { color: #e6db74; }
+    .yaml-cmt   { color: #4a4a4a; }
+
+    .ci-outputs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-top: 24px;
+    }
+    .ci-output {
+      background: var(--bg);
+      padding: 20px 20px;
+    }
+    .ci-output-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--cyan);
+      margin-bottom: 6px;
+    }
+    .ci-output-desc {
+      font-size: 13px;
+      color: var(--muted2);
+    }
+
+    /* ── Footer ───────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--muted2);
+    }
+    .footer-brand strong {
+      font-weight: 500;
+      color: var(--text);
+    }
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+    .footer-links a {
+      font-size: 13px;
+      color: var(--muted);
+      transition: color 0.15s;
+    }
+    .footer-links a:hover { color: var(--text); }
+
+    /* ── Responsive ───────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .container { padding: 0 20px; }
+      nav { padding: 0 20px; }
+      section { padding: 64px 0; }
+      #hero { padding-top: 120px; }
+      .stats-row { flex-direction: column; }
+      .stat { border-right: none; border-bottom: 1px solid var(--border); }
+      .stat:last-child { border-bottom: none; }
+      .checks-grid { grid-template-columns: 1fr; }
+      .ci-outputs { grid-template-columns: 1fr; }
+      .footer-inner { flex-direction: column; gap: 24px; }
+      .grade-display { gap: 8px; }
+    }
+
+    @media (max-width: 540px) {
+      h1 { font-size: 36px; }
+      .command-box { flex-direction: column; align-items: stretch; }
+      .command-box .prompt { border-right: none; border-bottom: 1px solid var(--border2); }
+      .copy-btn { border-left: none; border-top: 1px solid var(--border2); text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ──────────────────────────────────────────────────── -->
+<nav id="nav">
+  <a href="/" class="nav-logo">
+    <div class="shield">🛡</div>
+    supaguard
+  </a>
+  <div class="nav-links">
+    <a href="https://github.com/noblleai/supaguard" class="nav-link" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.03c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 013-.4c1.02 0 2.04.13 3 .4 2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.21.7.83.58C20.57 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub
+    </a>
+    <a href="https://www.npmjs.com/package/supaguard" class="nav-link" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474C23.214 24 24 23.214 24 22.237V1.763C24 .786 23.214 0 22.237 0zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L11.948 19.2H5.113z"/></svg>
+      npm
+    </a>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      Open source &nbsp;·&nbsp; Zero install &nbsp;·&nbsp; Zero dependencies
+    </div>
+    <h1>Security audit for<br><em>Supabase</em> projects.</h1>
+    <p class="hero-sub">
+      AI writes your backend. It makes the same security mistakes, every time.
+      supaguard finds them in seconds — and fixes the ones it can.
+    </p>
+    <div class="command-box">
+      <span class="prompt">$</span>
+      <code>npx supaguard</code>
+      <button class="copy-btn" id="copyBtn" onclick="copyCommand()">Copy</button>
+    </div>
+    <p class="hero-footnote">No install required. Works with Next.js, SvelteKit, Nuxt, and any Supabase project.</p>
+  </div>
+</section>
+
+<!-- ── Terminal Demo ─────────────────────────────────────────── -->
+<section id="demo">
+  <div class="container">
+    <div class="terminal-window">
+      <div class="terminal-bar">
+        <div class="terminal-dots">
+          <div class="tdot tdot-r"></div>
+          <div class="tdot tdot-y"></div>
+          <div class="tdot tdot-g"></div>
+        </div>
+        <div class="terminal-title">supaguard</div>
+      </div>
+      <div class="terminal-body" id="terminalBody"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Stats ─────────────────────────────────────────────────── -->
+<section id="stats">
+  <div class="container">
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-number">8</div>
+        <div class="stat-label">check categories</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">30+</div>
+        <div class="stat-label">secret patterns</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">81</div>
+        <div class="stat-label">automated tests</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">0</div>
+        <div class="stat-label">runtime dependencies</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Checks ─────────────────────────────────────────────────── -->
+<section id="checks">
+  <div class="container">
+    <p class="section-label">What it checks</p>
+    <h2 class="section-title">Every common Supabase security hole.</h2>
+    <p class="section-sub">Checks your migrations, source code, config files, and Edge Functions — not just patterns, but context.</p>
+
+    <div class="checks-grid" style="margin-top:48px">
+
+      <div class="check-card">
+        <div class="check-category">
+          <div class="check-icon red">🔐</div>
+          <span class="check-name">RLS Policies</span>
+        </div>
+        <ul class="check-items">
+          <li>Table with no Row Level Security</li>
+          <li>RLS enabled but no policies (all queries denied)</li>
+          <li><code style="font-family:monospace;font-size:12px">USING (true)</code> — unconditionally permissive</li>
+          <li>Tenant column not enforced in any policy</li>
+          <li>Missing <code style="font-family:monospace;font-size:12px">WITH CHECK</code> on write policies</li>
+          <li><code style="font-family:monospace;font-size:12px">user_metadata</code> used for RBAC</li>
+        </ul>
+      </div>
+
+      <div class="check-card">
+        <div class="check-category">
+          <div class="check-icon yellow">🔑</div>
+          <span class="check-name">Auth Misuse</span>
+        </div>
+        <ul class="check-items">
+          <li><code style="font-family:monospace;font-size:12px">getSession()</code> as server-side auth gate</li>
+          <li><code style="font-family:monospace;font-size:12px">createBrowserClient</code> in server files</li>
+          <li><code style="font-family:monospace;font-size:12px">auth.admin</code> outside admin routes</li>
+          <li>Edge functions without auth forwarding</li>
+        </ul>
+      </div>
+
+      <div class="check-card">
+        <div class="check-category">
+          <div class="check-icon cyan">🛤</div>
+          <span class="check-name">API Routes</span>
+        </div>
+        <ul class="check-items">
+          <li>Exported handler with no auth pattern</li>
+          <li>Template literal in Supabase query (SQL injection)</li>
+          <li>Raw <code style="font-family:monospace;font-size:12px">req.json()</code> piped into insert (mass assignment)</li>
+          <li>ID param without ownership check (IDOR)</li>
+        </ul>
+      </div>
+
+      <div class="check-card">
+        <div class="check-category">
+          <div class="check-icon red">📦</div>
+          <span class="check-name">Storage Security</span>
+        </div>
+        <ul class="check-items">
+          <li><code style="font-family:monospace;font-size:12px">public: true</code> bucket in migrations or code</li>
+          <li><code style="font-family:monospace;font-size:12px">USING (true)</code> on storage.objects</li>
+          <li><code style="font-family:monospace;font-size:12px">dangerouslyAllowBrowser: true</code></li>
+          <li>Signed URL with expiry &gt; 7 days</li>
+        </ul>
+      </div>
+
+      <div class="check-card">
+        <div class="check-category">
+          <div class="check-icon red">🔒</div>
+          <span class="check-name">Secrets & Credentials</span>
+        </div>
+        <ul class="check-items">
+          <li>Stripe, OpenAI, Anthropic, GitHub, Slack keys</li>
+          <li>AWS Access Key ID &amp; Secret</li>
+          <li>DB connection strings with credentials</li>
+          <li>Private key blocks, Firebase service accounts</li>
+          <li><code style="font-family:monospace;font-size:12px">.env</code> not in <code style="font-family:monospace;font-size:12px">.gitignore</code></li>
+        </ul>
+      </div>
+
+      <div class="check-card">
+        <div class="check-category">
+          <div class="check-icon green">⚡</div>
+          <span class="check-name">Edge Functions</span>
+        </div>
+        <ul class="check-items">
+          <li>Supabase client without auth header forwarding</li>
+          <li>Wildcard CORS with authenticated operations</li>
+          <li>Hardcoded JWT in function source</li>
+          <li>DB access without user identity check</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── Grade ─────────────────────────────────────────────────── -->
+<section id="grade">
+  <div class="container">
+    <p class="section-label">Security grade</p>
+    <h2 class="section-title">Know your score. Share it.</h2>
+    <p class="section-sub">Every scan ends with a letter grade. Add a badge to your README — or keep it private and work through the findings.</p>
+
+    <div class="grade-display">
+      <div class="grade-pill grade-a">
+        <span class="grade-letter">A</span>
+        <div class="grade-desc">No findings</div>
+      </div>
+      <div class="grade-pill grade-b">
+        <span class="grade-letter">B</span>
+        <div class="grade-desc">Warnings only<br>(≤ 2)</div>
+      </div>
+      <div class="grade-pill grade-c">
+        <span class="grade-letter">C</span>
+        <div class="grade-desc">Warnings only<br>(3+)</div>
+      </div>
+      <div class="grade-pill grade-d">
+        <span class="grade-letter">D</span>
+        <div class="grade-desc">1–2 critical<br>issues</div>
+      </div>
+      <div class="grade-pill grade-f">
+        <span class="grade-letter">F</span>
+        <div class="grade-desc">3+ critical<br>issues</div>
+      </div>
+    </div>
+
+    <div class="badge-box">
+      <div class="badge-box-header">
+        <span>$</span>
+        <span class="t-cmd">npx supaguard <span style="color:var(--cyan)">--badge</span></span>
+      </div>
+      <div class="badge-box-body">
+        <span class="t-dim"># Paste this into your README</span>
+        <div class="badge-output">[![supaguard](https://img.shields.io/badge/supabase--guard%3A+A-brightgreen?logo=supabase&logoColor=white)](https://github.com/noblleai/supaguard)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Fix ───────────────────────────────────────────────────── -->
+<section id="fix">
+  <div class="container">
+    <p class="section-label">Auto-fix</p>
+    <h2 class="section-title">It doesn't just report.<br>It fixes.</h2>
+    <p class="section-sub">Run <code style="font-family:monospace;color:var(--cyan)">--fix</code> and supaguard generates a migration for your RLS gaps and updates your <code style="font-family:monospace;color:var(--cyan)">.gitignore</code> — then tells you what it couldn't touch and why.</p>
+
+    <div class="fix-terminal">
+      <div class="terminal-bar">
+        <div class="terminal-dots">
+          <div class="tdot tdot-r"></div>
+          <div class="tdot tdot-y"></div>
+          <div class="tdot tdot-g"></div>
+        </div>
+        <div class="terminal-title">supaguard --fix</div>
+      </div>
+      <div class="fix-body">
+        <span class="fix-line"><span class="t-dim">  supaguard  v0.2.0  --fix mode</span></span>
+        <span class="fix-line"><span class="t-dim">  ─────────────────────────────────────────────</span></span>
+        <span class="fix-line"> </span>
+        <span class="fix-line"><span class="t-white t-bold">  Auto-fixed</span></span>
+        <span class="fix-line"><span class="t-dim">  ─────────────────────────────────────────────</span></span>
+        <span class="fix-line"> </span>
+        <span class="fix-line">  <span class="t-green">✔</span>  Created <span class="t-cyan">supabase/migrations/20260622120000_supabase_guard_fixes.sql</span></span>
+        <span class="fix-line">     <span class="t-dim">·</span> Enable RLS on "orders"</span>
+        <span class="fix-line">     <span class="t-dim">·</span> Stub policy for "products" (needs customisation)</span>
+        <span class="fix-line"> </span>
+        <span class="fix-line">  <span class="t-green">✔</span>  Updated <span class="t-cyan">.gitignore</span></span>
+        <span class="fix-line">     <span class="t-dim">·</span> Added ".env.local"</span>
+        <span class="fix-line"> </span>
+        <span class="fix-line"><span class="t-white t-bold">  Needs manual attention</span>  <span class="t-dim">(3 issues)</span></span>
+        <span class="fix-line"><span class="t-dim">  ─────────────────────────────────────────────</span></span>
+        <span class="fix-line">  <span class="t-red">✖</span>  getSession() used for server-side auth in app/api/posts/route.ts</span>
+        <span class="fix-line">  <span class="t-red">✖</span>  Stripe secret key found in source → lib/stripe.ts:3</span>
+        <span class="fix-line">  <span class="t-red">✖</span>  Policy "insert_post" uses user_metadata for RBAC</span>
+        <span class="fix-line"> </span>
+        <span class="fix-line">  <span class="t-dim">Run</span> npx supaguard <span class="t-dim">to verify.</span></span>
+        <span class="fix-line">  <span class="t-yellow">⚠</span>  <span class="t-dim">Review the generated migration before running supabase db push.</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CI ────────────────────────────────────────────────────── -->
+<section id="ci">
+  <div class="container">
+    <p class="section-label">CI integration</p>
+    <h2 class="section-title">Ship it. Then keep it clean.</h2>
+    <p class="section-sub">Drop the GitHub Action in your workflow. It outputs the security grade, finding counts, and a JSON results file as step outputs.</p>
+
+    <div class="ci-block" style="margin-top:40px">
+      <div class="ci-block-header">
+        <span style="font-family:monospace;font-size:12px">.github/workflows/security.yml</span>
+        <button class="copy-btn" style="border:none;border-left:none;background:transparent;font-size:12px" onclick="copyCI()">Copy</button>
+      </div>
+      <div class="ci-block-body" id="ciBlock">
+<span class="yaml-cmt"># One-line action</span>
+<span class="yaml-key">- uses</span>: <span class="yaml-val">noblleai/supaguard@v1</span>
+  <span class="yaml-key">with</span>:
+    <span class="yaml-key">fail-on</span>: <span class="yaml-str">critical</span>    <span class="yaml-cmt"># critical | warning | info | none</span>
+
+<span class="yaml-cmt"># Or run directly and use the outputs</span>
+<span class="yaml-key">- uses</span>: <span class="yaml-val">noblleai/supaguard@v1</span>
+  <span class="yaml-key">id</span>: <span class="yaml-val">audit</span>
+  <span class="yaml-key">with</span>:
+    <span class="yaml-key">fail-on</span>: <span class="yaml-str">none</span>
+
+<span class="yaml-key">- run</span>: <span class="yaml-val">echo "Grade is ${{ steps.audit.outputs.grade }}"</span>
+      </div>
+    </div>
+
+    <div class="ci-outputs">
+      <div class="ci-output">
+        <div class="ci-output-name">outputs.grade</div>
+        <div class="ci-output-desc">Security grade — A, B, C, D, or F</div>
+      </div>
+      <div class="ci-output">
+        <div class="ci-output-name">outputs.critical-count</div>
+        <div class="ci-output-desc">Number of critical findings</div>
+      </div>
+      <div class="ci-output">
+        <div class="ci-output-name">outputs.results-path</div>
+        <div class="ci-output-desc">Path to the full JSON results file</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ────────────────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span>Built by</span>
+        <strong><a href="https://noblle.ai" target="_blank" rel="noopener" style="color:var(--text)">Noblle</a></strong>
+        <span style="color:var(--border2)">·</span>
+        <span>MIT License</span>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/noblleai/supaguard" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.npmjs.com/package/supaguard" target="_blank" rel="noopener">npm</a>
+        <a href="https://github.com/noblleai/supaguard/issues" target="_blank" rel="noopener">Issues</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── Nav scroll effect ────────────────────────────────────────
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  }, { passive: true });
+
+  // ── Copy command ─────────────────────────────────────────────
+  function copyCommand() {
+    navigator.clipboard.writeText('npx supaguard').then(() => {
+      const btn = document.getElementById('copyBtn');
+      const orig = btn.textContent;
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function copyCI() {
+    const text = `- uses: noblleai/supaguard@v1
+  with:
+    fail-on: critical`;
+    navigator.clipboard.writeText(text);
+  }
+
+  // ── Terminal animation ───────────────────────────────────────
+  const LINES = [
+    { h: '  <span class="t-bold t-white">supaguard</span>  <span class="t-dim">v0.2.0</span>', d: 0 },
+    { h: '  <span class="t-dim">─────────────────────────────────────────────</span>', d: 40 },
+    { h: '  <span class="t-dim">12 migrations · 8 tables · 24 route files · 3,102 source files&nbsp;&nbsp;(411ms)</span>', d: 80 },
+    { h: '', d: 60 },
+    { h: '  <span class="t-red">✖</span>  <span class="t-bold t-white">RLS Policies</span>', d: 0 },
+    { h: '  <span class="t-dim">─────────────────────────────────────────────</span>', d: 30 },
+    { h: '', d: 30 },
+    { h: '  <span class="t-critical">CRITICAL</span>  <span class="t-white">"orders" has RLS enabled but no policies</span>', d: 80 },
+    { h: '            <span class="t-dim">With RLS on and no policies Postgres denies all access.</span>', d: 20 },
+    { h: '            <span class="t-dim">→</span> <span class="t-cyan">supabase/migrations/20240801_orders.sql</span>', d: 10 },
+    { h: '            <span class="t-green">✦</span> <span class="t-dim">auto-fixable — run</span> npx supaguard --fix', d: 10 },
+    { h: '', d: 60 },
+    { h: '  <span class="t-critical">CRITICAL</span>  <span class="t-white">"invoices" has tenant column not enforced in any RLS policy</span>', d: 100 },
+    { h: '            <span class="t-dim">Column [company_id] exists but no policy checks it.</span>', d: 20 },
+    { h: '            <span class="t-dim">Any authenticated user can read every tenant\'s data.</span>', d: 10 },
+    { h: '            <span class="t-dim">→</span> <span class="t-cyan">supabase/migrations/20240715_invoices.sql:12</span>', d: 10 },
+    { h: '', d: 80 },
+    { h: '  <span class="t-red">✖</span>  <span class="t-bold t-white">Auth Misuse</span>', d: 0 },
+    { h: '  <span class="t-dim">─────────────────────────────────────────────</span>', d: 30 },
+    { h: '', d: 30 },
+    { h: '  <span class="t-critical">CRITICAL</span>  <span class="t-white">getSession() used for server-side auth in app/api/posts/route.ts</span>', d: 80 },
+    { h: '            <span class="t-dim">A crafted cookie bypasses this check entirely.</span>', d: 20 },
+    { h: '            <span class="t-dim">→</span> <span class="t-cyan">app/api/posts/route.ts:8</span>', d: 10 },
+    { h: '            <span class="t-dim">fix: Use supabase.auth.getUser() — validates on every call.</span>', d: 10 },
+    { h: '', d: 80 },
+    { h: '  <span class="t-red">✖</span>  <span class="t-bold t-white">Secrets &amp; Credentials</span>', d: 0 },
+    { h: '  <span class="t-dim">─────────────────────────────────────────────</span>', d: 30 },
+    { h: '', d: 30 },
+    { h: '  <span class="t-critical">CRITICAL</span>  <span class="t-white">Stripe secret key found in source</span>', d: 80 },
+    { h: '            <span class="t-dim">→</span> <span class="t-cyan">lib/stripe.ts:3</span>', d: 10 },
+    { h: '            <span class="t-dim">fix: Rotate immediately. Move to process.env.STRIPE_SECRET_KEY.</span>', d: 10 },
+    { h: '', d: 80 },
+    { h: '  <span class="t-dim">─────────────────────────────────────────────</span>', d: 0 },
+    { h: '  <span class="t-red">3 critical</span>  ·  <span class="t-yellow">1 warning</span>', d: 40 },
+    { h: '', d: 40 },
+    { h: '  Security grade: <span class="t-red t-bold">F</span>  <span class="t-dim">(critical)</span>', d: 0 },
+    { h: '  <span class="t-dim">1 issue can be auto-fixed — run</span> npx supaguard --fix', d: 20 },
+    { h: '', d: 0 },
+  ];
+
+  const body = document.getElementById('terminalBody');
+  let animating = true;
+
+  async function sleep(ms) {
+    return new Promise(r => setTimeout(r, ms));
+  }
+
+  function makeEl(html) {
+    const s = document.createElement('span');
+    s.className = 't-line';
+    s.innerHTML = html;
+    return s;
+  }
+
+  async function typePrompt() {
+    const line = document.createElement('span');
+    line.className = 't-line';
+    const prefix = document.createElement('span');
+    prefix.className = 't-prompt';
+    prefix.textContent = '$ ';
+    line.appendChild(prefix);
+    const cmd = document.createElement('span');
+    cmd.className = 't-cmd';
+    line.appendChild(cmd);
+    const cursor = document.createElement('span');
+    cursor.className = 't-cursor';
+    line.appendChild(cursor);
+    body.appendChild(line);
+
+    const text = 'npx supaguard';
+    for (const ch of text) {
+      cmd.textContent += ch;
+      await sleep(55);
+    }
+    await sleep(260);
+    cursor.remove();
+  }
+
+  async function runAnimation() {
+    while (animating) {
+      body.innerHTML = '';
+      await sleep(600);
+      await typePrompt();
+      await sleep(140);
+
+      for (const line of LINES) {
+        if (line.d > 0) await sleep(line.d);
+        body.appendChild(makeEl(line.h));
+      }
+
+      await sleep(4200);
+
+      // Fade out
+      body.style.opacity = '0';
+      body.style.transition = 'opacity 0.4s';
+      await sleep(420);
+      body.style.opacity = '1';
+      body.style.transition = '';
+      await sleep(800);
+    }
+  }
+
+  // Start after fonts load
+  if (document.fonts) {
+    document.fonts.ready.then(() => runAnimation());
+  } else {
+    setTimeout(runAnimation, 400);
+  }
+</script>
+
+</body>
+</html>

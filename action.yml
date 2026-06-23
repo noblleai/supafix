@@ -1,0 +1,105 @@
+name: 'supaguard'
+description: 'Security audit for Supabase projects — RLS policies, auth misuse, secrets, storage, Edge Functions'
+author: 'Noblle'
+
+branding:
+  icon: 'shield'
+  color: 'red'
+
+inputs:
+  working-directory:
+    description: 'Project root to scan (default: repo root)'
+    required: false
+    default: '.'
+  fail-on:
+    description: 'Minimum severity that fails the build. Options: critical, warning, info, none'
+    required: false
+    default: 'critical'
+  skip-rls:
+    description: 'Skip RLS policy checks'
+    required: false
+    default: 'false'
+  skip-routes:
+    description: 'Skip API route auth checks'
+    required: false
+    default: 'false'
+  skip-storage:
+    description: 'Skip storage security checks'
+    required: false
+    default: 'false'
+  skip-secrets:
+    description: 'Skip secret / credential scanning'
+    required: false
+    default: 'false'
+  skip-injection:
+    description: 'Skip injection / mass-assignment checks'
+    required: false
+    default: 'false'
+  skip-edge:
+    description: 'Skip Edge Function checks'
+    required: false
+    default: 'false'
+
+outputs:
+  grade:
+    description: 'Security grade (A / B / C / D / F)'
+    value: ${{ steps.scan.outputs.grade }}
+  critical-count:
+    description: 'Number of critical findings'
+    value: ${{ steps.scan.outputs.critical_count }}
+  warning-count:
+    description: 'Number of warning findings'
+    value: ${{ steps.scan.outputs.warning_count }}
+  results-path:
+    description: 'Path to the JSON results file'
+    value: ${{ steps.scan.outputs.results_path }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Run supaguard
+      id: scan
+      shell: bash
+      run: |
+        FLAGS=""
+        [ "${{ inputs.skip-rls }}"       = "true" ] && FLAGS="$FLAGS --no-rls"
+        [ "${{ inputs.skip-routes }}"    = "true" ] && FLAGS="$FLAGS --no-routes"
+        [ "${{ inputs.skip-storage }}"   = "true" ] && FLAGS="$FLAGS --no-storage"
+        [ "${{ inputs.skip-secrets }}"   = "true" ] && FLAGS="$FLAGS --no-secrets"
+        [ "${{ inputs.skip-injection }}" = "true" ] && FLAGS="$FLAGS --no-injection"
+        [ "${{ inputs.skip-edge }}"      = "true" ] && FLAGS="$FLAGS --no-edge"
+
+        RESULTS_PATH="${RUNNER_TEMP}/supaguard-results.json"
+
+        set +e
+        npx supaguard \
+          --cwd "${{ inputs.working-directory }}" \
+          --json $FLAGS \
+          | tee "$RESULTS_PATH"
+        SCAN_EXIT=$?
+        set -e
+
+        GRADE=$(jq -r '.grade // "F"' "$RESULTS_PATH")
+        CRITICAL=$(jq '[.findings[] | select(.severity=="critical")] | length' "$RESULTS_PATH")
+        WARNINGS=$(jq '[.findings[] | select(.severity=="warning")]  | length' "$RESULTS_PATH")
+
+        echo "grade=$GRADE"                >> "$GITHUB_OUTPUT"
+        echo "critical_count=$CRITICAL"    >> "$GITHUB_OUTPUT"
+        echo "warning_count=$WARNINGS"     >> "$GITHUB_OUTPUT"
+        echo "results_path=$RESULTS_PATH"  >> "$GITHUB_OUTPUT"
+
+        echo ""
+        echo "Security grade: $GRADE"
+        echo "Critical: $CRITICAL  Warnings: $WARNINGS"
+
+        FAIL_ON="${{ inputs.fail-on }}"
+        if [ "$FAIL_ON" = "none" ]; then
+          exit 0
+        elif [ "$FAIL_ON" = "info" ] && [ "$SCAN_EXIT" != "0" ]; then
+          exit 1
+        elif [ "$FAIL_ON" = "warning" ] && [ "$WARNINGS" -gt 0 ]; then
+          exit 1
+        elif [ "$FAIL_ON" = "critical" ] && [ "$CRITICAL" -gt 0 ]; then
+          exit 1
+        fi
+        exit 0
