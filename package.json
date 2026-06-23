@@ -2,12 +2,28 @@
   "name": "supafix",
   "version": "0.2.0",
   "description": "Security audit for Supabase projects — RLS policies, unprotected API routes, exposed secrets",
-  "keywords": ["supabase", "security", "rls", "row-level-security", "nextjs", "audit", "postgres"],
+  "keywords": [
+    "supabase",
+    "security",
+    "rls",
+    "row-level-security",
+    "nextjs",
+    "audit",
+    "postgres"
+  ],
   "homepage": "https://github.com/noblleai/supafix",
-  "repository": { "type": "git", "url": "https://github.com/noblleai/supafix.git" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/noblleai/supafix.git"
+  },
   "license": "MIT",
-  "bin": { "supafix": "./dist/cli.js" },
-  "files": ["dist", "README.md"],
+  "bin": {
+    "supafix": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsx src/cli.ts",
@@ -20,6 +36,10 @@
     "tsx": "^4.19.0",
     "typescript": "^5.8.0"
   },
-  "engines": { "node": ">=18" },
-  "publishConfig": { "access": "public" }
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }
